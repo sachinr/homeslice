@@ -1,102 +1,38 @@
-setCookie("timeformat", "12hr", 365);
+// Make an empty Object to be added to.
+cities = {}
 
-timeFormatButtonEl.addEventListener("click", changeTimeFormatting, false);
-timeFormatButtonEl.addEventListener("click", setTimeFormats, false);
-timeFormatButtonEl.addEventListener("click", updateCities, false);
+// Setup
+var interval                = 500
+var hoursInTheFuture        = 24 * 7
+                            // Regex to match if a time difference is plus or minus 30min.
+                            // E.g. Adelaide is +0930.
+var plusOrMinusThirty       = /(\+|\-)\d{2}3\d{1}/g
+                            // Negative lookahead of the above regex.
+                            // So you can say "doesn't match".
+var notPlusOrMinusThirty    = /^(?!(\+|\-)\d{2}3\d{1})/g
+var cookieString            = App.Cookie.get("cities");
+var selectedIndex           = undefined;
+var creditEl                = document.createElement("div");
+                              creditEl.setAttribute("class", "credit");
+var creditCopy              = "<p>Homeslice is a project by <a href=\"http://andytaylor.me/\">Andy&nbsp;Taylor</a> (@<a href=\"http://twitter.com/andytlr/\">andytlr</a>).</p> <p>If you find it useful (I hope you do), why not <a href=\"http://twitter.com/home?status=Homeslice: Find time across timezones. http://homeslice.in\">Tweet about it</a> or <a href=\"https://www.facebook.com/sharer/sharer.php?u=http://homeslice.in\">post it on&nbsp;Facebook</a>.</p> <p>Please submit bugs and requests on <a href=\"https://github.com/andytlr/homeslice/issues/\">GitHub</a>.</p>";
 
-function showSettings() {
-  settingsEl.classList.remove("is-hidden");
-  citiesEl.classList.add("is-hidden");
-  settingsButtonEl.classList.add("is-hidden");
-  timeFormatButtonEl.classList.add("is-hidden");
-  headingsEl.classList.add("is-hidden");
-  document.body.classList.add("settingsvisible");
-  window.scrollTo(0, 0);
-}
 
-function hideSettings() {
-  settingsEl.classList.add("is-hidden");
-  citiesEl.classList.remove("is-hidden");
-  settingsButtonEl.classList.remove("is-hidden");
-  timeFormatButtonEl.classList.remove("is-hidden");
-  headingsEl.classList.remove("is-hidden");
-  document.body.classList.remove("settingsvisible");
-  window.scrollTo(0, 0);
-}
+App.Cookie.set("timeformat", "12hr", 365);
 
-hideSettings();
+App.TimeFormats.button.addEventListener("click", App.TimeFormats.change, false);
+App.TimeFormats.button.addEventListener("click", App.TimeFormats.set, false);
+App.TimeFormats.button.addEventListener("click", updateCities, false);
 
-if (! cookieString) {
-  var cookieString = defaultCities
-  setCookie("cities", cookieString, 365)
-}
-
-var cookieCities = getCookie("cities").split(",");
-
-function removeCityFromCookie(city) {
-  var addButton = document.getElementById('add' + city);
-
-  if (addButton.classList.contains('is-active')) {
-    addButton.classList.remove('is-active');
-
-    var regex = city + ",";
-    cookieString = cookieString.replace(new RegExp(regex,"g"), "");
-    setCookie("cities", cookieString, 365);
-    var cookieCities = getCookie("cities").split(",");
-    // console.log("Cookie String: " + cookieString);
-    // console.log("Cookie Array: " + cookieCities);
-  } else {
-    addCityToCookie(city)
-  }
-};
-
-function addCityToCookie(city) {
-  var addButton = document.getElementById('add' + city);
-
-  if (addButton.classList.contains('is-active')) {
-    removeCityFromCookie(city)
-  } else {
-    addButton.classList.add('is-active');
-
-    cookieString += city + ",";
-    setCookie("cities", cookieString, 365);
-    var cookieCities = getCookie("cities").split(",");
-    // console.log("Cookie String: " + cookieString);
-    // console.log("Cookie Array: " + cookieCities);
-  }
-};
-
-settingsButtonEl.onclick = function showSettingsScreen() {
-  showSettings();
-}
-
-headingsEl.onclick = function showSettingsScreen() {
-  showSettings();
-}
-
-var saveButtonEl            = document.createElement("div");
-var saveButtonCopy          = document.createTextNode("↫ I'm done pickin’");
-
-settingsButtonEl.appendChild(settingsButtonContent);
-settingsEl.insertBefore(saveButtonEl, settingsEl.firstChild);
-saveButtonEl.appendChild(saveButtonCopy);
-saveButtonEl.classList.add("savebutton");
-
-saveButtonEl.onclick = function closeSettingsScreen() {
-  // hideSettings();
-  window.location = "/";
-}
-
-for (var city in cityOptions) {
+for (var city in App.Cities.options) {
 
   var cityOptionEl                 = document.createElement("div");
-  var cityName                     = document.createTextNode(cityOptions[city][0]);
+  var cityName                     = document.createTextNode(App.Cities.options[city][0]);
   var cityOptionCurrentTimeEl      = document.createElement("span");
   var cityOptionCurrentGmtOffsetEl = document.createElement("span");
-  var currentTime                  = document.createTextNode(moment().tz(cityOptions[city][1]).format(formatTimeForList));
-  var currentGmtOffset             = document.createTextNode(moment().tz(cityOptions[city][1]).format('Z'));
+  var currentTime                  = document.createTextNode(moment().tz(App.Cities.options[city][1]).format(App.TimeFormats.TimeForList));
+  var currentGmtOffset             = document.createTextNode(moment().tz(App.Cities.options[city][1]).format('Z'));
 
-  settingsEl.appendChild(cityOptionEl);
+  App.Settings.el.appendChild(cityOptionEl);
   cityOptionEl.appendChild(cityName);
   cityOptionEl.appendChild(cityOptionCurrentTimeEl);
   cityOptionEl.appendChild(cityOptionCurrentGmtOffsetEl);
@@ -108,14 +44,14 @@ for (var city in cityOptions) {
   var addButton = document.getElementById('add' + city);
 
   if (cookieCities.indexOf(city) > -1) {
-    addButton.onclick = removeCityFromCookie.bind(this, city);
+    addButton.onclick = App.Cookie.removeCity.bind(this, city);
     addButton.classList.add("is-active");
     cities[city] = [
-      cityOptions[city][0],
-      cityOptions[city][1]
+      App.Cities.options[city][0],
+      App.Cities.options[city][1]
     ];
   } else {
-    addButton.onclick = addCityToCookie.bind(this, city);
+    addButton.onclick = App.Cookie.addCity.bind(this, city);
     addButton.classList.remove("is-active");
   }
 }
@@ -134,8 +70,8 @@ for (var city in cities) {
   var cityShortName = city;
 
   // Append generated elements and add classes
-  citiesEl.appendChild(cityEl).classList.add("city", cityShortName);
-  headingsEl.appendChild(headingEl).classList.add("heading");
+  App.Cities.el.appendChild(cityEl).classList.add("city", cityShortName);
+  App.Settings.headingsEl.appendChild(headingEl).classList.add("heading");
   headingEl.appendChild(cityName);
 
   // Append div.hour with data-hour="cityshortname" X times.
@@ -174,17 +110,17 @@ function updateCities(){
       var timeDiff = moment().tz(tzName).format('Z').replace(/:/, "")
 
       if (index == 0) {
-        var format = formatCurrentTime;
+        var format = App.TimeFormats.CurrentTime;
         hourNode.classList.add("current");
       } else if (timeDiff.match(plusOrMinusThirty) && index != 0){
-        format = formatTimePlusThirty;
+        format = App.TimeFormats.TimePlusThirty;
         currentTime = currentTime.add('hours', index);
         currentTime = currentTime.subtract('hours', 0.5);
-        hourNode.setAttribute("data-email-content", cities[city][0] + "%0D%0A" + currentTime.format(formatForEmailPlusThirty) + "%0D%0A%0D%0A");
+        hourNode.setAttribute("data-email-content", cities[city][0] + "%0D%0A" + currentTime.format(App.TimeFormats.ForEmailPlusThirty) + "%0D%0A%0D%0A");
       } else {
-        var format = formatTime;
+        var format = App.TimeFormats.Time;
         currentTime = currentTime.add('hours', index);
-        hourNode.setAttribute("data-email-content", cities[city][0] + "%0D%0A" + currentTime.format(formatForEmail) + "%0D%0A%0D%0A");
+        hourNode.setAttribute("data-email-content", cities[city][0] + "%0D%0A" + currentTime.format(App.TimeFormats.ForEmail) + "%0D%0A%0D%0A");
       }
 
       if (!hourNode.classList.contains("current")) {
@@ -207,7 +143,7 @@ function updateCities(){
       // and it isn't the first item (current time).
       // Set the new time format.
       if (timeDiff.match(notPlusOrMinusThirty) && currentTime.format('HH') == 00 && index != 0) {
-        var format = formatNewDay;
+        var format = App.TimeFormats.NewDay;
       }
 
       // If timezone doesn't have a half hour difference,
@@ -222,7 +158,7 @@ function updateCities(){
       // and it isn't the first item (current time).
       // Set the new time format.
       if (timeDiff.match(notPlusOrMinusThirty) && currentTime.format('HH') == 12 && index != 0) {
-        var format = formatMidday;
+        var format = App.TimeFormats.Midday;
       }
 
       if (currentTime.format('ha') == "12am") {
@@ -376,16 +312,3 @@ shareButtonEl.onclick = function emailSelectedHours() {
 
   window.location = "mailto:?subject=Let's Chat&body=" + data + "Scheduled with http://homeslice.in";
 }
-
-// Analytics Stuff
-shareButtonEl.addEventListener("click", function(){
-  ga('send', 'event', 'button', 'click', 'Email');
-}, true);
-
-settingsButtonEl.addEventListener("click", function(){
-  ga('send', 'event', 'button', 'click', 'Open Settings');
-}, true);
-
-timeFormatButtonEl.addEventListener("click", function(){
-  ga('send', 'event', 'button', 'click', 'Switch Time Format');
-}, true);

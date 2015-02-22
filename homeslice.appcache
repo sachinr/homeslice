@@ -3,11 +3,7 @@ CACHE MANIFEST
 
 CACHE:
 index.html
-assets/app.js
-assets/cities.js
-assets/cookie_utils.js
-assets/init.js
-assets/time_formats.js
+assets/main.js
 vendor/fastclick.min.js
 vendor/moment-timezone-with-data-2010-2020.min.js
 vendor/moment.min.js
@@ -19,4 +15,4 @@ assets/icon.png
 NETWORK:
 *
 
-# hash: 21f972e46ad087ffa61e056f13dd287f9075facbfad20ffcf38689fcb94d098e
+# hash: 20b266766a054d48b68422dee70d3e74cf1aadd0b23229b24556ad3357dd66c1
