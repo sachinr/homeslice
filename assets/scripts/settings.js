@@ -45,7 +45,7 @@ saveButtonEl.appendChild(saveButtonCopy);
 saveButtonEl.classList.add("savebutton");
 
 saveButtonEl.onclick = function closeSettingsScreen() {
-  // hideSettings();
-  window.location = "/";
+  App.Settings.hide();
+  App.start();
 }
 

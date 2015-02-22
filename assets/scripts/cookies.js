@@ -25,33 +25,11 @@ App.Cookie = {
       x=x.replace(/^\s+|\s+$/g,"");
       if (x==c_name) {
        return unescape(y);
-      }
-    }
+      };
+    };
   },
-
-  removeCity: function(city) {
-    var regex = city + ",";
-    cookieString = cookieString.replace(new RegExp(regex,"g"), "");
-    App.Cookie.set("cities", cookieString, 365);
-    var cookieCities = App.Cookie.get("cities").split(",");
-  },
-
-  addCity: function(city) {
-    cookieString += city + ",";
-    App.Cookie.set("cities", cookieString, 365);
-    var cookieCities = App.Cookie.get("cities").split(",");
-  },
-
 };
 
 if (App.Cookie.isEnabled() == false) {
   alert("Homeslice uses cookies to remember which cities you compare. Please turn on cookies if you want it to work.")
 }
-
-var defaultCities = "melbourne,sanfrancisco,"
-
-if (! App.Cookie.get("cities")) {
-  App.Cookie.set("cities", defaultCities, 365)
-}
-
-var cookieCities = App.Cookie.get("cities").split(",");

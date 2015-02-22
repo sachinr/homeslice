@@ -98,7 +98,8 @@ App.Cities = {
           App.Cities.options[city][0] + "<span>"+currentTime+"</span><span>"+
           currentGmtOffset+"</span></div>");
 
-      if (cookieCities.indexOf(city) > -1) {
+      urlCities = App.Url.get().split("/");
+      if (urlCities.indexOf(city) > -1) {
         cities[city] = [
           App.Cities.options[city][0],
           App.Cities.options[city][1]

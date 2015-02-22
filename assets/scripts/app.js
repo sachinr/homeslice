@@ -1,6 +1,3 @@
-// Make an empty Object to be added to.
-cities = {}
-
 // Setup
 var interval                = 500
 var hoursInTheFuture        = 24 * 7
@@ -10,7 +7,7 @@ var plusOrMinusThirty       = /(\+|\-)\d{2}3\d{1}/g
                             // Negative lookahead of the above regex.
                             // So you can say "doesn't match".
 var notPlusOrMinusThirty    = /^(?!(\+|\-)\d{2}3\d{1})/g
-var cookieString            = App.Cookie.get("cities");
+var urlString               = App.Url.get();
 var selectedIndex           = undefined;
 var creditEl                = document.createElement("div");
                               creditEl.setAttribute("class", "credit");
@@ -19,50 +16,52 @@ var creditCopy              = "<p>Homeslice is a project by <a href=\"http://and
 
 App.Cookie.set("timeformat", "12hr", 365);
 
+App.start = function(){
+  cities = {};
+  App.Cities.initializeList();
+  loadCities();
+}
+
 $(App.TimeFormats.button).on("click", function() {
   App.TimeFormats.change();
   App.TimeFormats.set();
   updateCities();
 });
 
-App.Cities.initializeList();
+window.onpopstate = function(event) {
+  App.start();
+};
 
-$('.addbutton').on('click', function(e) {
-  city = $(this).data('city');
-  if (cookieCities.indexOf(city) > -1) {
-    App.Cookie.removeCity(city);
-    $(this).removeClass("is-active");
-  } else {
-    App.Cookie.addCity(city);
-    $(this).addClass("is-active");
-  }
-})
+function loadCities(){
+  $('#cities').html("");
+  $('#headings').html("");
+  // For each city
+  for (var city in cities) {
+    console.log(city);
 
-// For each city
-for (var city in cities) {
+    // Generate markup for each city
+    var cityEl        = document.createElement("div");
+    var headingEl     = document.createElement("h2");
 
-  // Generate markup for each city
-  var cityEl        = document.createElement("div");
-  var headingEl     = document.createElement("h2");
+    // Nice name for city, e.g. 'San Francisco'
+    var cityName      = document.createTextNode(cities[city][0]);
 
-  // Nice name for city, e.g. 'San Francisco'
-  var cityName      = document.createTextNode(cities[city][0]);
+    // The name in the URL, e.g. 'sanfrancisco'
+    var cityShortName = city;
 
-  // The name in the URL, e.g. 'sanfrancisco'
-  var cityShortName = city;
+    // Append generated elements and add classes
+    App.Cities.el.appendChild(cityEl).classList.add("city", cityShortName);
+    App.Settings.headingsEl.appendChild(headingEl).classList.add("heading");
+    headingEl.appendChild(cityName);
 
-  // Append generated elements and add classes
-  App.Cities.el.appendChild(cityEl).classList.add("city", cityShortName);
-  App.Settings.headingsEl.appendChild(headingEl).classList.add("heading");
-  headingEl.appendChild(cityName);
-
-  // Append div.hour with data-hour="cityshortname" X times.
-  // Where X is the number of hours in the future.
-  // `hoursInTheFuture` is set at the top of this script.
-  for (var i = 0; i < hoursInTheFuture; i++) {
-    var hourEl     = document.createElement("div");
-    cityEl.appendChild(hourEl).classList.add("hour");
-    hourEl.setAttribute("data-hour", cityShortName);
+    // Append div.hour with data-hour="cityshortname" X times.
+    // Where X is the number of hours in the future.
+    // `hoursInTheFuture` is set at the top of this script.
+    for (var i = 0; i < hoursInTheFuture; i++) {
+      var hourEl     = document.createElement("div");
+      cityEl.appendChild(hourEl).classList.add("hour");
+      hourEl.setAttribute("data-hour", cityShortName);
+    }
   }
 }
 
@@ -234,8 +233,19 @@ function updateCities(){
   }
 };
 
-// Run the update cities function.
-updateCities();
+App.start();
+
+$('.addbutton').on('click', function(e) {
+  urlCities = App.Url.get().split("/");
+  city = $(this).data('city');
+  if (urlCities.indexOf(city) > -1) {
+    App.Url.removeCity(city);
+    $(this).removeClass("is-active");
+  } else {
+    App.Url.addCity(city);
+    $(this).addClass("is-active");
+  }
+})
 
 // Then re-run it every second.
 setInterval(updateCities, interval);
