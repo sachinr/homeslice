@@ -30,36 +30,16 @@ App.Cookie = {
   },
 
   removeCity: function(city) {
-    var addButton = document.getElementById('add' + city);
-
-    if (addButton.classList.contains('is-active')) {
-      addButton.classList.remove('is-active');
-
-      var regex = city + ",";
-      cookieString = cookieString.replace(new RegExp(regex,"g"), "");
-      App.Cookie.set("cities", cookieString, 365);
-      var cookieCities = App.Cookie.get("cities").split(",");
-      // console.log("Cookie String: " + cookieString);
-      // console.log("Cookie Array: " + cookieCities);
-    } else {
-      App.Cookie.addCity(city)
-    }
+    var regex = city + ",";
+    cookieString = cookieString.replace(new RegExp(regex,"g"), "");
+    App.Cookie.set("cities", cookieString, 365);
+    var cookieCities = App.Cookie.get("cities").split(",");
   },
 
   addCity: function(city) {
-    var addButton = document.getElementById('add' + city);
-
-    if (addButton.classList.contains('is-active')) {
-      App.Cookie.removeCity(city)
-    } else {
-      addButton.classList.add('is-active');
-
-      cookieString += city + ",";
-      App.Cookie.set("cities", cookieString, 365);
-      var cookieCities = App.Cookie.get("cities").split(",");
-      // console.log("Cookie String: " + cookieString);
-      // console.log("Cookie Array: " + cookieCities);
-    }
+    cookieString += city + ",";
+    App.Cookie.set("cities", cookieString, 365);
+    var cookieCities = App.Cookie.get("cities").split(",");
   },
 
 };

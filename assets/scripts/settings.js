@@ -9,7 +9,7 @@ App.Settings = {
     App.Settings.el.classList.remove("is-hidden");
     App.Cities.el.classList.add("is-hidden");
     App.Settings.buttonEl.classList.add("is-hidden");
-    App.TimeFormats.button.classList.add("is-hidden");
+    $(App.TimeFormats.button).addClass("is-hidden");
     App.Settings.headingsEl.classList.add("is-hidden");
     document.body.classList.add("settingsvisible");
     window.scrollTo(0, 0);
@@ -19,7 +19,7 @@ App.Settings = {
     App.Settings.el.classList.add("is-hidden");
     App.Cities.el.classList.remove("is-hidden");
     App.Settings.buttonEl.classList.remove("is-hidden");
-    App.TimeFormats.button.classList.remove("is-hidden");
+    $(App.TimeFormats.button).removeClass("is-hidden");
     App.Settings.headingsEl.classList.remove("is-hidden");
     document.body.classList.remove("settingsvisible");
     window.scrollTo(0, 0);

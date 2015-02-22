@@ -1,9 +1,9 @@
 App.TimeFormats = {
-  button: document.getElementById("timeformatbutton"),
+  button: "#timeformatbutton",
 
   set: function() {
     if (App.Cookie.get("timeformat") == "12hr" || App.Cookie.get("timeformat") == undefined) {
-      App.TimeFormats.button.innerHTML = "Use 24hr"
+      $(App.TimeFormats.button).html("Use 24hr");
       App.TimeFormats.CurrentTime            = 'ddd h:mma'
       App.TimeFormats.Time                   = 'ddd ha'
       App.TimeFormats.NewDay                 = 'ddd Do MMM'
@@ -13,7 +13,7 @@ App.TimeFormats = {
       App.TimeFormats.ForEmail               = 'ha on dddd Do MMMM'
       App.TimeFormats.ForEmailPlusThirty     = 'h[:30]a on dddd Do MMMM'
     } else {
-      App.TimeFormats.button.innerHTML = "Use 12hr"
+      $(App.TimeFormats.button).html("Use 12hr");
       App.TimeFormats.CurrentTime            = 'ddd HH:mm'
       App.TimeFormats.Time                   = 'ddd HH[:00]'
       App.TimeFormats.NewDay                 = 'ddd DD/MM'

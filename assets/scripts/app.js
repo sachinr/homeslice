@@ -19,42 +19,24 @@ var creditCopy              = "<p>Homeslice is a project by <a href=\"http://and
 
 App.Cookie.set("timeformat", "12hr", 365);
 
-App.TimeFormats.button.addEventListener("click", App.TimeFormats.change, false);
-App.TimeFormats.button.addEventListener("click", App.TimeFormats.set, false);
-App.TimeFormats.button.addEventListener("click", updateCities, false);
+$(App.TimeFormats.button).on("click", function() {
+  App.TimeFormats.change();
+  App.TimeFormats.set();
+  updateCities();
+});
 
-for (var city in App.Cities.options) {
+App.Cities.initializeList();
 
-  var cityOptionEl                 = document.createElement("div");
-  var cityName                     = document.createTextNode(App.Cities.options[city][0]);
-  var cityOptionCurrentTimeEl      = document.createElement("span");
-  var cityOptionCurrentGmtOffsetEl = document.createElement("span");
-  var currentTime                  = document.createTextNode(moment().tz(App.Cities.options[city][1]).format(App.TimeFormats.TimeForList));
-  var currentGmtOffset             = document.createTextNode(moment().tz(App.Cities.options[city][1]).format('Z'));
-
-  App.Settings.el.appendChild(cityOptionEl);
-  cityOptionEl.appendChild(cityName);
-  cityOptionEl.appendChild(cityOptionCurrentTimeEl);
-  cityOptionEl.appendChild(cityOptionCurrentGmtOffsetEl);
-  cityOptionCurrentTimeEl.appendChild(currentTime);
-  cityOptionCurrentGmtOffsetEl.appendChild(currentGmtOffset);
-  cityOptionEl.classList.add("addbutton");
-  cityOptionEl.id = "add" + city;
-
-  var addButton = document.getElementById('add' + city);
-
+$('.addbutton').on('click', function(e) {
+  city = $(this).data('city');
   if (cookieCities.indexOf(city) > -1) {
-    addButton.onclick = App.Cookie.removeCity.bind(this, city);
-    addButton.classList.add("is-active");
-    cities[city] = [
-      App.Cities.options[city][0],
-      App.Cities.options[city][1]
-    ];
+    App.Cookie.removeCity(city);
+    $(this).removeClass("is-active");
   } else {
-    addButton.onclick = App.Cookie.addCity.bind(this, city);
-    addButton.classList.remove("is-active");
+    App.Cookie.addCity(city);
+    $(this).addClass("is-active");
   }
-}
+})
 
 // For each city
 for (var city in cities) {

@@ -87,6 +87,28 @@ App.Cities = {
     "vladivostok":   ["Vladivostok",     "Asia/Vladivostok"],
     "auckland":      ["Auckland",        "Pacific/Auckland"],
     "fiji":          ["Fiji",            "Pacific/Fiji"]
+  },
+
+  initializeList: function() {
+    for (var city in App.Cities.options) {
+      var currentTime                  = moment().tz(App.Cities.options[city][1]).format(App.TimeFormats.TimeForList);
+      var currentGmtOffset             = moment().tz(App.Cities.options[city][1]).format('Z');
+
+      $(App.Settings.el).append("<div class='addbutton' data-city='" + city + "'>" +
+          App.Cities.options[city][0] + "<span>"+currentTime+"</span><span>"+
+          currentGmtOffset+"</span></div>");
+
+      if (cookieCities.indexOf(city) > -1) {
+        cities[city] = [
+          App.Cities.options[city][0],
+          App.Cities.options[city][1]
+        ];
+        $("*[data-city='"+ city +"']").addClass('is-active');
+      }
+    }
+
   }
 
 }
+
+
