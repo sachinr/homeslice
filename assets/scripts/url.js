@@ -16,6 +16,7 @@ App.Url = {
   },
 
   addCity: function(city) {
+    urlString = App.Url.get();
     urlString += city + "/";
     App.Url.set(urlString);
     var urlCities = App.Url.get().split("/");
