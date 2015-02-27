@@ -1,6 +1,6 @@
 App.Url = {
   set: function(value) {
-    history.pushState({}, document.title, "#" + value)
+    history.pushState({}, document.title, "#" + value);
   },
 
   get: function() {
@@ -24,11 +24,10 @@ App.Url = {
 
 };
 
-var defaultCities = "melbourne/sanfrancisco/"
+var defaultCities = "melbourne/sanfrancisco/";
 
 if (!App.Url.get()) {
-  console.log('here')
-  App.Url.set(defaultCities)
+  App.Url.set(defaultCities);
 }
 
 var urlCities = App.Url.get().split("/");

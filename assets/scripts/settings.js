@@ -24,15 +24,15 @@ App.Settings = {
     document.body.classList.remove("settingsvisible");
     window.scrollTo(0, 0);
   }
-}
+};
 
 App.Settings.buttonEl.onclick = function showSettingsScreen() {
   App.Settings.show();
-}
+};
 
 App.Settings.headingsEl.onclick = function showSettingsScreen() {
   App.Settings.show();
-}
+};
 
 App.Settings.hide();
 
@@ -47,5 +47,4 @@ saveButtonEl.classList.add("savebutton");
 saveButtonEl.onclick = function closeSettingsScreen() {
   App.Settings.hide();
   App.start();
-}
-
+};

@@ -13,7 +13,7 @@ App.Cookie = {
   set: function(c_name,value,exdays) {
     var exdate=new Date();
     exdate.setDate(exdate.getDate() + exdays);
-    var c_value=escape(value) + ((exdays==null) ? "" : ("; expires="+exdate.toUTCString()));
+    var c_value=escape(value) + ((exdays===null) ? "" : ("; expires="+exdate.toUTCString()));
     document.cookie=c_name + "=" + c_value;
   },
 
@@ -25,11 +25,11 @@ App.Cookie = {
       x=x.replace(/^\s+|\s+$/g,"");
       if (x==c_name) {
        return unescape(y);
-      };
-    };
+      }
+    }
   },
 };
 
-if (App.Cookie.isEnabled() == false) {
-  alert("Homeslice uses cookies to remember which cities you compare. Please turn on cookies if you want it to work.")
+if (App.Cookie.isEnabled() === false) {
+  alert("Homeslice uses cookies to remember which cities you compare. Please turn on cookies if you want it to work.");
 }

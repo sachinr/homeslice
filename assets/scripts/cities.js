@@ -107,9 +107,5 @@ App.Cities = {
         $("*[data-city='"+ city +"']").addClass('is-active');
       }
     }
-
   }
-
-}
-
-
+};
