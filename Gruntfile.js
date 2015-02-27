@@ -19,8 +19,7 @@ module.exports = function(grunt) {
           specs: 'test/specs/*.js',
           vendor: ['vendor/fastclick*.js', 'vendor/jquery*.js',
           'vendor/moment.min*.js', 'vendor/moment-timezone*.js'],
-          keepRunner : true,
-          helpers: 'test/helpers/template-prepare.js'
+          template: 'test/my_template.tmpl',
         }
       }
     },
