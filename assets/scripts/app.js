@@ -20,6 +20,10 @@ App.start = function(){
   cities = {};
   App.Cities.initializeList();
   loadCities();
+  updateCities();
+  // Then re-run it every second.
+  setInterval(updateCities, interval);
+
 };
 
 $(App.TimeFormats.button).on("click", function() {
@@ -250,9 +254,6 @@ $('.addbutton').on('click', function(e) {
     $(this).addClass("is-active");
   }
 });
-
-// Then re-run it every second.
-setInterval(updateCities, interval);
 
 document.body.insertBefore(creditEl, document.body.lastChild);
 creditEl.innerHTML = creditCopy;
