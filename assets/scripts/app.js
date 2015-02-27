@@ -9,9 +9,10 @@ var plusOrMinusThirty       = /(\+|\-)\d{2}3\d{1}/g;
 var notPlusOrMinusThirty    = /^(?!(\+|\-)\d{2}3\d{1})/g;
 var urlString               = Url.get();
 var selectedIndex;
-var cities = {};
+var cities;
 
 function initializeList() {
+  cities = {};
   for (var city in Cities.options) {
     var currentTime                  = moment().tz(Cities.options[city][1]).format(TimeFormats.TimeForList);
     var currentGmtOffset             = moment().tz(Cities.options[city][1]).format('Z');
@@ -233,14 +234,15 @@ function updateCities(){
   }
 }
 
-start = function(){
+loadSelectedCities = function(){
   TimeFormats.set(Cookie.get());
-  cities = {};
-  initializeList();
   loadCities();
   updateCities();
   setInterval(updateCities, interval);
 };
+
+initializeList();
+loadSelectedCities();
 
 $('.addbutton').on('click', function(e) {
   urlCities = Url.get().split("/");
@@ -257,7 +259,8 @@ $('.addbutton').on('click', function(e) {
 $('.savebutton').on('click', function(e) {
   $("#filter").val('');
   Settings.hide();
-  start();
+  initializeList();
+  loadSelectedCities();
 });
 
 $('#filter').on('input', function() {
@@ -271,7 +274,6 @@ $(TimeFormats.button).on("click", function() {
 });
 
 window.onpopstate = function(event) {
-  start();
+  initializeList();
+  loadSelectedCities();
 };
-
-start();
