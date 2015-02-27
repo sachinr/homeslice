@@ -9,6 +9,22 @@ module.exports = function(grunt) {
         }
       }
     },
+
+    jasmine: {
+      components: {
+        src: [ "assets/scripts/cookies.js", "assets/scripts/url.js",
+        "assets/scripts/cities.js", "assets/scripts/time_formats.js",
+        "assets/scripts/settings.js", "assets/scripts/app.js" ],
+        options: {
+          specs: 'test/specs/*.js',
+          vendor: ['vendor/fastclick*.js', 'vendor/jquery*.js',
+          'vendor/moment.min*.js', 'vendor/moment-timezone*.js'],
+          keepRunner : true,
+          helpers: 'test/helpers/template-prepare.js'
+        }
+      }
+    },
+
     watch: {
       files: ['<%= jshint.files %>'],
       tasks: ['jshint']
@@ -18,6 +34,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-jasmine');
 
-  grunt.registerTask('default', ['jshint']);
+  grunt.registerTask('default', ['jshint', 'jasmine']);
 
 };
