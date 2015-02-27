@@ -7,33 +7,28 @@ var plusOrMinusThirty       = /(\+|\-)\d{2}3\d{1}/g;
                             // Negative lookahead of the above regex.
                             // So you can say "doesn't match".
 var notPlusOrMinusThirty    = /^(?!(\+|\-)\d{2}3\d{1})/g;
-var urlString               = App.Url.get();
+var urlString               = Url.get();
 var selectedIndex;
-var creditEl                = document.createElement("div");
-                              creditEl.setAttribute("class", "credit");
-var creditCopy              = "<p>Homeslice is a project by <a href=\"http://andytaylor.me/\">Andy&nbsp;Taylor</a> (@<a href=\"http://twitter.com/andytlr/\">andytlr</a>).</p> <p>If you find it useful (I hope you do), why not <a href=\"http://twitter.com/home?status=Homeslice: Find time across timezones. http://homeslice.in\">Tweet about it</a> or <a href=\"https://www.facebook.com/sharer/sharer.php?u=http://homeslice.in\">post it on&nbsp;Facebook</a>.</p> <p>Please submit bugs and requests on <a href=\"https://github.com/andytlr/homeslice/issues/\">GitHub</a>.</p>";
+var cities = {};
 
+function initializeList() {
+  for (var city in Cities.options) {
+    var currentTime                  = moment().tz(Cities.options[city][1]).format(TimeFormats.TimeForList);
+    var currentGmtOffset             = moment().tz(Cities.options[city][1]).format('Z');
 
-App.Cookie.set("timeformat", "12hr", 365);
+    $('#settings').append("<div class='addbutton' data-city='" + city + "'>" +
+        Cities.options[city][0] + "<span>"+currentTime+"</span><span>"+
+        currentGmtOffset+"</span></div>");
 
-App.start = function(){
-  cities = {};
-  App.Cities.initializeList();
-  loadCities();
-  updateCities();
-  // Then re-run it every second.
-  setInterval(updateCities, interval);
-
-};
-
-$(App.TimeFormats.button).on("click", function() {
-  App.TimeFormats.change();
-  App.TimeFormats.set();
-  updateCities();
-});
-
-window.onpopstate = function(event) {
-  App.start();
+    urlCities = Url.get().split("/");
+    if (urlCities.indexOf(city) > -1) {
+      cities[city] = [
+        Cities.options[city][0],
+        Cities.options[city][1]
+          ];
+      $("*[data-city='"+ city +"']").addClass('is-active');
+    }
+  }
 };
 
 function loadCities(){
@@ -54,8 +49,8 @@ function loadCities(){
     var cityShortName = city;
 
     // Append generated elements and add classes
-    App.Cities.el.appendChild(cityEl).classList.add("city", cityShortName);
-    App.Settings.headingsEl.appendChild(headingEl).classList.add("heading");
+    Cities.el.appendChild(cityEl).classList.add("city", cityShortName);
+    document.getElementById("headings").appendChild(headingEl).classList.add("heading");
     headingEl.appendChild(cityName);
 
     // Append div.hour with data-hour="cityshortname" X times.
@@ -70,7 +65,6 @@ function loadCities(){
 }
 
 function printHour(city, tzName, hourNode, index) {
-
   // Set `currentTime` to the correct time with Moment Timezone.
   var currentTime = moment().tz(tzName);
 
@@ -79,17 +73,15 @@ function printHour(city, tzName, hourNode, index) {
   var format;
 
   if (index === 0) {
-    format = App.TimeFormats.CurrentTime;
+    format = TimeFormats.CurrentTime;
     hourNode.classList.add("current");
   } else if (timeDiff.match(plusOrMinusThirty) && index !== 0){
-    format = App.TimeFormats.TimePlusThirty;
+    format = TimeFormats.TimePlusThirty;
     currentTime = currentTime.add('hours', index);
     currentTime = currentTime.subtract('hours', 0.5);
-    hourNode.setAttribute("data-email-content", cities[city][0] + "%0D%0A" + currentTime.format(App.TimeFormats.ForEmailPlusThirty) + "%0D%0A%0D%0A");
   } else {
-    format = App.TimeFormats.Time;
+    format = TimeFormats.Time;
     currentTime = currentTime.add('hours', index);
-    hourNode.setAttribute("data-email-content", cities[city][0] + "%0D%0A" + currentTime.format(App.TimeFormats.ForEmail) + "%0D%0A%0D%0A");
   }
 
   if (!hourNode.classList.contains("current")) {
@@ -110,7 +102,7 @@ function printHour(city, tzName, hourNode, index) {
   // and it isn't the first item (current time).
   // Set the new time format.
   if (timeDiff.match(notPlusOrMinusThirty) && currentTime.format('HH') == '00' && index !== 0) {
-    format = App.TimeFormats.NewDay;
+    format = TimeFormats.NewDay;
   }
 
   // If timezone doesn't have a half hour difference,
@@ -125,7 +117,7 @@ function printHour(city, tzName, hourNode, index) {
   // and it isn't the first item (current time).
   // Set the new time format.
   if (timeDiff.match(notPlusOrMinusThirty) && currentTime.format('HH') == '12' && index !== 0) {
-    format = App.TimeFormats.Midday;
+    format = TimeFormats.Midday;
   }
 
   if (currentTime.format('ha') == "12am") {
@@ -241,71 +233,45 @@ function updateCities(){
   }
 }
 
-App.start();
+start = function(){
+  TimeFormats.set(Cookie.get());
+  cities = {};
+  initializeList();
+  loadCities();
+  updateCities();
+  setInterval(updateCities, interval);
+};
 
 $('.addbutton').on('click', function(e) {
-  urlCities = App.Url.get().split("/");
+  urlCities = Url.get().split("/");
   city = $(this).data('city');
   if (urlCities.indexOf(city) > -1) {
-    App.Url.removeCity(city);
+    Url.removeCity(city);
     $(this).removeClass("is-active");
   } else {
-    App.Url.addCity(city);
+    Url.addCity(city);
     $(this).addClass("is-active");
   }
 });
 
-document.body.insertBefore(creditEl, document.body.lastChild);
-creditEl.innerHTML = creditCopy;
+$('.savebutton').on('click', function(e) {
+  $("#filter").val('');
+  Settings.hide();
+  start();
+});
 
-// Filtering
-window.setInterval(function(){
-  var filterInputValue = document.getElementById("filter").value;
+$('#filter').on('input', function() {
+  Settings.filter($('#filter').val())
+});
 
-  var allAddButtons = document.querySelectorAll('.addbutton');
-  for (var i = 0; i < allAddButtons.length; i++) {
-    if (allAddButtons[i].textContent.toLowerCase().indexOf(filterInputValue.toLowerCase().trim()) >= 0) {
-      allAddButtons[i].classList.remove("is-hidden");
-    } else {
-      allAddButtons[i].classList.add("is-hidden");
-    }
-  }
+$(TimeFormats.button).on("click", function() {
+  Cookie.change();
+  TimeFormats.set(Cookie.get());
+  updateCities();
+});
 
-  var clearButton = document.getElementById("clearbutton");
-
-  if (filterInputValue === "") {
-    clearButton.classList.remove("is-active");
-  } else {
-    clearButton.classList.add("is-active");
-    clearButton.onclick = function clearSearchInput() {
-      document.getElementById("filter").value = "";
-      window.scrollTo(0, 0);
-    };
-  }
-}, 50);
-
-var shareButtonEl = document.getElementById("sharebutton");
-
-function hideOrShowEmailButton() {
-  var shareableHours = document.querySelectorAll('.selectedhourforsharing');
-
-  if (shareableHours.length === 0) {
-    shareButtonEl.classList.add("is-hidden");
-  } else {
-    shareButtonEl.classList.remove("is-hidden");
-  }
-}
-hideOrShowEmailButton();
-setInterval(hideOrShowEmailButton, interval);
-
-shareButtonEl.onclick = function emailSelectedHours() {
-  var shareableHours = document.querySelectorAll('.selectedhourforsharing');
-
-  var data = [];
-
-  for (var i = 0; i < shareableHours.length; i++) {
-    data += shareableHours[i].getAttribute("data-email-content");
-  }
-
-  window.location = "mailto:?subject=Let's Chat&body=" + data + "Scheduled with http://homeslice.in";
+window.onpopstate = function(event) {
+  start();
 };
+
+start();

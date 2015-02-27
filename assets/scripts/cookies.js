@@ -1,6 +1,6 @@
-App = {};
-App.Cookie = {
-  isEnabled: function() {
+(function(exports){
+
+  exports.isEnabled = function() {
     var cookieEnabled = (navigator.cookieEnabled) ? true : false;
     if (typeof navigator.cookieEnabled == "undefined" && !cookieEnabled) {
       document.cookie="testcookie";
@@ -8,28 +8,44 @@ App.Cookie = {
     }
     return (cookieEnabled);
 
-  },
+  }
 
-  set: function(c_name,value,exdays) {
-    var exdate=new Date();
-    exdate.setDate(exdate.getDate() + exdays);
-    var c_value=escape(value) + ((exdays===null) ? "" : ("; expires="+exdate.toUTCString()));
-    document.cookie=c_name + "=" + c_value;
-  },
+  exports.set = function(value) {
+    var exdate = new Date();
+    exdate.setDate(exdate.getDate() + 365);
+    var c_value = escape(value) + "; expires=" + exdate.toUTCString();
+    document.cookie= "timeformat=" + c_value;
 
-  get: function(c_name) {
+    return value;
+  }
+
+  exports.get = function() {
     var i,x,y,ARRcookies=document.cookie.split(";");
     for (i=0;i<ARRcookies.length;i++) {
       x=ARRcookies[i].substr(0,ARRcookies[i].indexOf("="));
       y=ARRcookies[i].substr(ARRcookies[i].indexOf("=")+1);
       x=x.replace(/^\s+|\s+$/g,"");
-      if (x==c_name) {
-       return unescape(y);
+
+      if (x=="timeformat") {
+       if(y === undefined){
+         return Cookie.set("12hr")
+       } else {
+         return unescape(y)
+       };
       }
     }
-  },
-};
+  }
 
-if (App.Cookie.isEnabled() === false) {
+  exports.change = function() {
+    if (Cookie.get() == "12hr" || Cookie.get() === undefined) {
+      Cookie.set("24hr");
+    } else {
+      Cookie.set("12hr");
+    }
+  };
+
+})(this.Cookie = { })
+
+if (Cookie.isEnabled() === false) {
   alert("Homeslice uses cookies to remember which cities you compare. Please turn on cookies if you want it to work.");
 }

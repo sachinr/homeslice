@@ -35,12 +35,13 @@
   <script charset="utf-8" src="vendor/moment.min.js"></script>
   <script charset="utf-8" src="vendor/moment-timezone-with-data-2010-2020.min.js"></script>
   <script charset="utf-8" src="vendor/jquery-2.1.3.min.js"></script>
+
   <div class="buttoncluster">
     <div id="timeformatbutton"></div>
-    <div id="sharebutton">Email</div>
-    <div id="settingsbutton"></div>
+    <div id="settingsbutton">Set Cities</div>
   </div>
-  <div id="settings" class="is-hidden">
+  <div id="settings">
+    <div class="savebutton">↫ I'm done pickin’</div>
     <div class="searchbox">
       <input id="filter" type="text" placeholder="Search places..." />
       <div id="clearbutton">×</div>
@@ -48,6 +49,7 @@
   </div>
   <div class="headings" id="headings"></div>
   <div class="cities" id="cities"></div>
+
   <script charset="utf-8" src="assets/scripts/cookies.js"></script>
   <script charset="utf-8" src="assets/scripts/url.js"></script>
   <script charset="utf-8" src="assets/scripts/cities.js"></script>

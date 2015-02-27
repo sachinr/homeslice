@@ -1,33 +1,34 @@
-App.Url = {
-  set: function(value) {
+(function(exports){
+
+  exports.set = function(value) {
     history.pushState({}, document.title, "#" + value);
-  },
+  };
 
-  get: function() {
+  exports.get = function() {
     return window.location.hash.substring(1);
-  },
+  };
 
-  removeCity: function(city) {
+  exports.removeCity = function(city) {
     var regex = city + "\/";
-    urlString = App.Url.get().replace(new RegExp(regex,"g"), "");
-    console.log(regex, urlString);
-    App.Url.set(urlString);
-    var urlCities = App.Url.get().split("/");
-  },
+    urlString = Url.get().replace(new RegExp(regex,"g"), "");
+    Url.set(urlString);
+    var urlCities = Url.get().split("/");
+  };
 
-  addCity: function(city) {
-    urlString = App.Url.get();
+  exports.addCity = function(city) {
+    urlString = Url.get();
     urlString += city + "/";
-    App.Url.set(urlString);
-    var urlCities = App.Url.get().split("/");
-  },
+    Url.set(urlString);
+    var urlCities = Url.get().split("/");
+  };
 
-};
+
+})(this.Url = {})
 
 var defaultCities = "melbourne/sanfrancisco/";
 
-if (!App.Url.get()) {
-  App.Url.set(defaultCities);
+if (!Url.get()) {
+  Url.set(defaultCities);
 }
 
-var urlCities = App.Url.get().split("/");
+var urlCities = Url.get().split("/");

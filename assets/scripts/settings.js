@@ -1,50 +1,64 @@
-App.Settings = {
+(function(exports){
 
-  el:            document.getElementById("settings"),
-  buttonEl:      document.getElementById("settingsbutton"),
-  headingsEl:    document.getElementById("headings"),
-  buttonContent: document.createTextNode("Set Cities"),
+  exports.show = function() {
+    $("#settings").show();
 
-  show: function() {
-    App.Settings.el.classList.remove("is-hidden");
-    App.Cities.el.classList.add("is-hidden");
-    App.Settings.buttonEl.classList.add("is-hidden");
-    $(App.TimeFormats.button).addClass("is-hidden");
-    App.Settings.headingsEl.classList.add("is-hidden");
-    document.body.classList.add("settingsvisible");
+    $("#settingsbutton").hide();
+    $("#headings").hide();
+    $("#cities").hide();
+    $("#timeformatbutton").hide()
+
+    $(document).addClass("settingsvisible");
+
     window.scrollTo(0, 0);
-  },
+  };
 
-  hide: function() {
-    App.Settings.el.classList.add("is-hidden");
-    App.Cities.el.classList.remove("is-hidden");
-    App.Settings.buttonEl.classList.remove("is-hidden");
-    $(App.TimeFormats.button).removeClass("is-hidden");
-    App.Settings.headingsEl.classList.remove("is-hidden");
-    document.body.classList.remove("settingsvisible");
+
+  exports.hide = function() {
+    $("#settings").hide();
+
+    $("#settingsbutton").show();
+    $("#headings").show();
+    $("#cities").show();
+    $("#timeformatbutton").show()
+
+    $(document).removeClass("settingsvisible");
     window.scrollTo(0, 0);
+  };
+
+  exports.filter = function(filterInputValue) {
+    var allAddButtons = document.querySelectorAll('.addbutton');
+    for (var i = 0; i < allAddButtons.length; i++) {
+      if (allAddButtons[i].textContent.toLowerCase().indexOf(filterInputValue.toLowerCase().trim()) >= 0) {
+        allAddButtons[i].classList.remove("is-hidden");
+      } else {
+        allAddButtons[i].classList.add("is-hidden");
+      }
+    }
+
+    var clearButton = document.getElementById("clearbutton");
+
+    if (filterInputValue === "") {
+      clearButton.classList.remove("is-active");
+    } else {
+      clearButton.classList.add("is-active");
+      clearButton.onclick = function clearSearchInput() {
+        document.getElementById("filter").value = "";
+        window.scrollTo(0, 0);
+      };
+    }
+
   }
-};
 
-App.Settings.buttonEl.onclick = function showSettingsScreen() {
-  App.Settings.show();
-};
+})(this.Settings = {})
 
-App.Settings.headingsEl.onclick = function showSettingsScreen() {
-  App.Settings.show();
-};
 
-App.Settings.hide();
+$('#settingsbutton').on('click', function() {
+  Settings.show();
+});
 
-var saveButtonEl            = document.createElement("div");
-var saveButtonCopy          = document.createTextNode("↫ I'm done pickin’");
+$('#headings').on('click', function() {
+  Settings.show();
+});
 
-App.Settings.buttonEl.appendChild(App.Settings.buttonContent);
-App.Settings.el.insertBefore(saveButtonEl, App.Settings.el.firstChild);
-saveButtonEl.appendChild(saveButtonCopy);
-saveButtonEl.classList.add("savebutton");
-
-saveButtonEl.onclick = function closeSettingsScreen() {
-  App.Settings.hide();
-  App.start();
-};
+Settings.hide();
