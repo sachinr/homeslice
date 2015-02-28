@@ -10,8 +10,6 @@
       TimeFormats.TimePlusThirty         = 'ddd h:[30]a';
       TimeFormats.Midday                 = 'ddd [Midday]';
       TimeFormats.TimeForList            = 'h:mma';
-      TimeFormats.ForEmail               = 'ha on dddd Do MMMM';
-      TimeFormats.ForEmailPlusThirty     = 'h[:30]a on dddd Do MMMM';
     } else {
       $(TimeFormats.button).html("Use 12hr");
       TimeFormats.CurrentTime            = 'ddd HH:mm';
@@ -20,8 +18,6 @@
       TimeFormats.TimePlusThirty         = 'ddd HH[:30]';
       TimeFormats.Midday                 = 'ddd HH[:00]';
       TimeFormats.TimeForList            = 'HH:mm';
-      TimeFormats.ForEmail               = 'HH[:00] on DD/MM/YYYY';
-      TimeFormats.ForEmailPlusThirty     = 'HH[:30] on DD/MM/YYYY';
     }
   };
 

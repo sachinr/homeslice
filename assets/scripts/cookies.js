@@ -27,13 +27,12 @@
       x=x.replace(/^\s+|\s+$/g,"");
 
       if (x=="timeformat") {
-       if(y === undefined){
-         return Cookie.set("12hr")
-       } else {
+       if(y !== undefined){
          return unescape(y)
-       };
+       }
       }
     }
+    return "12hr";
   }
 
   exports.change = function() {
